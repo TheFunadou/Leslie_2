@@ -222,9 +222,21 @@
                 celda2.innerHTML = response.nombre;
                 celda3.innerHTML = response.marca;
                 celda4.innerHTML = cantidad.value;
-                total = (parseFloat(response.precio) * parseFloat(cantidad.value));
-                celda5.innerHTML = total;
-                suma(total);
+
+                if (cantidad.value >2){
+                    
+                    var total = (parseFloat(response.precio) * parseFloat(cantidad.value));
+                    // Aplicar 10% de descuento
+                    var descuento = total * 0.10;
+                    var total_descuento = total - descuento;
+                    console.log(total_descuento);
+                    celda5.innerHTML = total_descuento;
+                    suma(total_descuento);
+                }else{
+                    var total = (parseFloat(response.precio) * parseFloat(cantidad.value));
+                    celda5.innerHTML = total;
+                    suma(total);
+                }
 
             },
             error: function (jqXHR, textStatus, errorThrown) {
