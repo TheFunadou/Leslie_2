@@ -1,0 +1,183 @@
+{% extends 'templates_base/father_template.html' %}
+{% load static%}
+
+{% block content %}
+
+    <style>
+        main{
+            width: 100%;
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        form{
+            width: 80%;
+            height: 80%;
+            border-radius: 2vh;
+            background-color: #2c981d;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: solid #115a0b;;
+        }
+
+        form .main-conteiner{
+            width: 80%;
+            height: 20%;
+           
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        .main-conteiner .conteiner{
+            width: 80%;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+
+
+        .conteiner input{
+            width: 80%;
+            padding: 1%;
+            font-size: large;
+            border: none;
+            border-radius: 2vh;
+            text-align: center;
+
+        }
+
+        .conteiner h2{
+            color: #ffff;
+        }
+
+        .main-conteiner button{
+            width: 15%;
+            height: 10%;
+            padding: 2%;
+            margin: 0 2% 0 2%;
+            background-color: #ffff;
+            border: none;
+            border-radius: 2vh;
+            color: #000000dd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: large;
+        }
+
+        button a{
+            text-decoration: none;
+            color: #000000dd;
+            font-weight: bold;
+            font-size: large;
+        }
+
+        /*
+        form>label{
+            font-weight: bold;
+            font-size: large;
+            color: #ffff;
+        }
+
+        form>input{
+            margin: 3%;
+            width: 60%;
+            border-radius: 2vh;
+            border: none;
+            text-align: center;
+            padding: 1%;
+            font-size: large;
+        }
+
+        form>div{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        form div button{
+            margin: 4% 5% 0 5%;
+            border: none;
+            background-color: #115a0b;
+            font-weight: bold;
+            border-radius: 2vh;
+            width: 30%;
+            padding: 2%;
+            color: #ffff;
+        }
+
+        form div button a{
+            text-decoration: none;
+            color: #ffff;
+        }
+        */
+    </style>
+
+    <main>
+        <form action="{% url 'altas:registrar_articulo' %}" method="post">
+            {% csrf_token %}
+            
+            <div class="main-conteiner">
+                <div class="conteiner">
+                    <h2>RELLENA LA INFORMACIÓN DEL PRODUCTO:</h2>
+                </div>
+            </div>
+
+            <div class="main-conteiner">
+
+                <div class="conteiner">
+                    <h3>Nombre Producto</h3>
+                    <input type="text" id="nom_producto" name="nom_producto">
+                </div>
+                
+                <div class="conteiner">
+                    <h3>Marca</h3>
+                    <input type="text" id="marca" name="marca">
+                </div>
+                
+                <div class="conteiner">
+                    <h3>Modelo</h3>
+                    <input type="text" id="modelo" name="modelo">
+                </div>
+                
+            </div>
+
+            <div class="main-conteiner">
+                <div class="conteiner">
+                    <h3>Proveedor</h3>
+                    <input type="text" id="proveedor" name="proveedor">
+                </div>
+
+                <div class="conteiner">
+                    <h3>Existencias</h3>
+                    <input type="text" id="existencias" name="existencias">
+                </div>
+                
+                <div class="conteiner">
+                    <h3>Precio</h3>
+                    <input type="text" id="precio" name="precio">
+                </div>
+            </div>
+
+            <!-- <label for="img_prod">Cargar imagen del producto</label>
+            <input type="file" id="img_prod" name="img_prod"> -->
+
+            <div class="main-conteiner">
+                <button><a href="{% url 'main' %}">CANCELAR</a></button>
+                <button type="submit">GUARDAR</button>
+            </div>
+        </form>
+    </main>
+    
+{% endblock %}

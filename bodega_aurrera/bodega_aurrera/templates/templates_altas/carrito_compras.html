@@ -1,0 +1,361 @@
+{% extends 'templates_base/father_template.html' %}
+{% load static%}
+
+{% block content %}
+
+<style>
+    main {
+        width: 100%;
+        height: 85vh;
+    }
+
+    #main-conteiner {
+        width: 100%;
+        height: 90%;
+
+    }
+
+    #bottom-conteiner {
+        width: 100%;
+        height: 10%;
+
+    }
+
+    .body-conteiner {
+        width: 100%;
+        height: 80%;
+
+        display: flex;
+    }
+
+    .footer-conteiner {
+        width: 100%;
+        height: 20%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .body-conteiner .shopping-cart {
+        width: 75%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .body-conteiner .add-product {
+        width: 25%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    #cart-table {
+        border-collapse: collapse;
+        width: 90%;
+        background-color: rgb(3, 175, 11);
+        text-align: center;
+    }
+
+    #cart-table thead tr th {
+        border: solid rgb(1, 61, 4);
+        padding: 0.5%;
+    }
+
+    #cart-table tbody tr td {
+        border: solid rgb(1, 61, 4);
+        padding: 0.5%;
+    }
+
+    #add-producto-conteiner {
+        width: 70%;
+        height: 90%;
+        border-radius: 2vh;
+        background-color: #115a0b;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #add-producto-conteiner h2,
+    h3 {
+        color: #ffff;
+        text-align: center;
+    }
+
+    #add-producto-conteiner input {
+        width: 70%;
+        height: 10%;
+        border-radius: 2vh;
+        margin: 2%;
+        padding: 2%;
+        border: none;
+        text-align: center;
+        font-size: large;
+    }
+
+    #add-producto-conteiner button {
+        width: 70%;
+        height: 10%;
+        margin-top: 10%;
+        padding: 3%;
+        border: none;
+        border-radius: 2vh;
+        font-size: large;
+        font-weight: bold;
+        background-color: #ffff;
+        font-weight: bold;
+    }
+
+
+    .footer-conteiner div {
+        margin: 2%;
+        width: 20%;
+        height: 40%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    div label {
+        background-color: #115a0b;
+        border: solid #115a0b;
+        width: 60%;
+        height: 100%;
+        padding: 1.5%;
+        color: #ffff;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: large;
+        text-align: center;
+    }
+
+    div input {
+        width: 40%;
+        height: 100%;
+        padding: 1.5%;
+        border: solid rgb(211, 211, 211);
+        text-align: center;
+        font-weight: bold;
+        font-size: x-large;
+    }
+
+    div button {
+        width: 80%;
+        height: 100%;
+    }
+
+    #bottom-conteiner {
+        background-color: #115a0b;
+    }
+</style>
+
+
+<script>
+
+    function suma(n) {
+        // Obtén la tabla
+        var table = document.getElementById("cart-table");
+        var subtotal = document.getElementById('subtotal');
+        var total = document.getElementById('total');
+        var input_iva = document.getElementById('iva');
+
+        // Obtén todas las filas del tbody
+        var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+        // Inicializa la variable de suma
+        var suma = n;
+
+        // Itera a través de las filas (excluyendo la última fila, ya que quieres sumar desde la penúltima)
+        for (var i = 0; i < rows.length - 1; i++) {
+            // Obtén la última celda (columna 5, índice 4) de la fila actual
+            var lastCell = rows[i].getElementsByTagName("td")[4];
+
+            // Verifica si la celda existe antes de intentar acceder a su contenido
+            if (lastCell) {
+                // Obtén el valor de la celda y suma a la variable de suma
+                var cellValue = parseInt(lastCell.innerText);
+                suma += cellValue;
+            }
+        }
+
+        // Imprime la suma en la consola (puedes hacer lo que quieras con la suma en este punto)
+        subtotal.value = suma.toFixed(2);
+        //Calcular iva
+        var total_iva = suma*0.16;
+        iva.value = total_iva.toFixed(2);
+        var sum_total = suma + total_iva;
+        //total 
+        total.value = sum_total.toFixed(2);
+
+    }
+
+    function agregarProducto() {
+        var tabla = document.getElementById('cart-table');
+        var id_producto = document.getElementById('id_producto');
+        var cantidad = document.getElementById('cantidad');
+        //Enviar elementos al backend
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'altas:agregar_al_carrito' %}", // Reemplaza esto con la URL de tu vista en Django
+            data: {
+                'id_producto': id_producto.value,
+            },
+            dataType: 'json',
+            success: function (response) {
+                var fila = tabla.insertRow();
+                var celda1 = fila.insertCell(0);
+                var celda2 = fila.insertCell(1);
+                var celda3 = fila.insertCell(2);
+                var celda4 = fila.insertCell(3);
+                var celda5 = fila.insertCell(4);
+                //añadir informacion del backend a la tabla
+                celda1.innerHTML = response.id_producto;
+                celda2.innerHTML = response.nombre;
+                celda3.innerHTML = response.marca;
+                celda4.innerHTML = cantidad.value;
+                total = (parseFloat(response.precio) * parseFloat(cantidad.value));
+                celda5.innerHTML = total;
+                suma(total);
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Error en la solicitud AJAX:");
+                console.log("Estado: " + textStatus);
+                console.log("Error: " + errorThrown);
+            }
+        });
+    }
+
+    function pagar() {
+        var table = document.getElementById('cart-table');
+        var subtotal = document.getElementById('subtotal');
+        var total = document.getElementById('total');
+        var input_iva = document.getElementById('iva');
+        var cajero = document.getElementById('cajero');
+        // Obtén todas las filas del tbody
+        var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+        // Inicializa una lista para almacenar los valores del primer elemento de cada fila
+        var id_lista_productos = [];
+        var lista_cantidad = [];
+
+        // Itera a través de las filas
+        for (var i = 0; i < rows.length; i++) {
+            // Obtén la primera celda (columna 1, índice 0) de la fila actual
+            var primeraCelda = rows[i].getElementsByTagName("td")[0];
+            var cantidad = rows[i].getElementsByTagName("td")[3];
+
+            // Verifica si la celda existe antes de intentar acceder a su contenido
+            if (primeraCelda || cantidad) {
+                // Obtén el valor de la celda y agrégalo a la lista
+                var valorCelda = primeraCelda.innerText;
+                var valorCantidad = cantidad.innerText;
+                lista_cantidad.push(valorCantidad);
+                id_lista_productos.push(valorCelda);
+            }
+        }
+
+        // Imprime la lista en la consola
+        console.log('Lista Productos:' + id_lista_productos);
+        console.log('Lista cantidad producto: '+lista_cantidad);
+
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'altas:pagar' %}", // Reemplaza esto con la URL de tu vista en Django
+            data: {
+                'lista_id_productos': id_lista_productos,
+                'lista_cantidad': lista_cantidad,
+                'subtotal':subtotal.value,
+                'iva':input_iva.value,
+                'total':total.value,
+                'cajero':cajero.value, 
+            },
+            dataType: 'json',
+            success: function (response) {
+                window.open('/altas/ticket_pago/' + response.folio + '/' + response.cajero + '/' + response.subtotal + '/' + response.iva + '/' + response.total + '/');
+                window.location.href="{% url 'main' %}";
+                
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Error en la solicitud AJAX:");
+                console.log("Estado: " + textStatus);
+                console.log("Error: " + errorThrown);
+            }
+        });
+
+    }
+</script>
+
+<main>
+    <div id="main-conteiner">
+        <div class="body-conteiner">
+            <div class="shopping-cart">
+                <table id="cart-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NOMBRE</th>
+                            <th>MARCA</th>
+                            <th>CANTIDAD</th>
+                            <th>PRECIO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="add-product">
+                <div id="add-producto-conteiner">
+                    <h2>Agregar productos al carrito</h2>
+                    <br>
+                    <h3>Introduce ID del producto</h3>
+                    <input type="text" id="id_producto">
+                    <h3>Introduce cantidad</h3>
+                    <input type="text" id="cantidad">
+                    <button onclick="agregarProducto();">Agregar</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-conteiner">
+            <div>
+                <label for="subtotal">SUBTOTAL</label>
+                <input id="subtotal" type="text" value="0.00" readonly>
+            </div>
+            <div>
+                <label for="iva">IVA</label>
+                <input id="iva" type="text" value="0.00" readonly>
+            </div>
+            <div>
+                <label for="total">TOTAL</label>
+                <input id="total" type="text" value="0.00" readonly>
+            </div>
+            <div>
+                <label for="cajero">NOMBRE DEL CAJERO</label>
+                <input id="cajero" type="text" required>
+            </div>
+            <div>
+                <button><a href="{% url 'main' %}">CANCELAR</a></button>
+            </div>
+            <div>
+                <button onclick="pagar()">PAGAR</button>
+            </div>
+        </div>
+    </div>
+    <div id="bottom-conteiner">
+
+    </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'templates_base/father_template.html' %}
+{% load static%}
+
+{% block content %}
+
+    <style>
+
+        main{
+            width: 100%;
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        select{
+            margin: 1%;
+            width: 15%;
+            text-align: center;
+            padding: 0.5%;
+            border: solid #2c981d;
+            border-radius: 1vh;
+            background-color: #115a0b;
+            color: #ffff;
+            font-weight: bold;
+            font-size: large;
+        }
+
+    </style>
+
+    <script>
+
+        function redirect_altas(){
+            var select_altas = document.getElementById('select_altas');
+            switch(select_altas.value){
+                case 'venta':
+                    window.location.href = "{% url 'altas:venta' %}"
+                break;
+
+                case 'producto':
+                    window.location.href = "{% url 'altas:alta_articulo' %}"
+                break;
+            }
+        }
+
+        function redirect_reportes(){
+            var select_reportes = document.getElementById('select_reportes');
+            switch(select_reportes.value){
+                case 'reporte_productos':
+                    window.open("{% url 'altas:report_productos' %}");
+                    window.location.href = "{% url 'main' %}"
+                break;
+            }
+        }
+
+    </script>
+
+    <main>
+        <select name="select_altas" id="select_altas" onchange="redirect_altas()">
+            <option selected hidden>ALTAS</option>
+            <option value="venta">VENTA</option>
+            <option value="producto">NUEVO PRODUCTO</option>
+        </select>
+<!-- 
+        <select name="select_bajas" id="select_bajas">
+            <option selected hidden>BAJAS</option>
+            <option><a href="">PRODUCTOS</a></option>
+
+        </select>
+        <select name="modificaciones" id="select_modificaciones">
+            <option selected hidden>MODIFICACIONES</option>
+            <option><a href="">EDITAR INFORMACION PRODUCTO</a></option>
+
+        </select> -->
+        <select name="reportes" id="select_reportes" onchange="redirect_reportes()">
+            <option selected hidden>REPORTES</option>
+            <option value="reporte_productos">REPORTE DE PRODUCTOS</option>
+            <!-- <option><a href="">NUEVA VENTA</a></option> -->
+        </select>
+    </main>
+
+
+{% endblock %}
