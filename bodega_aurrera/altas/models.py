@@ -20,6 +20,7 @@ class pago(models.Model):
     producto = models.ForeignKey(alta_de_productos,on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     precio = models.FloatField()
+    descuento = models.DecimalField(max_digits=10,decimal_places=2, null=True)
     fecha_hora = models.DateTimeField(auto_now_add=True)
     
     class Meta:

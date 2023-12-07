@@ -54,6 +54,10 @@
                     window.open("{% url 'report:reporte_ventas_s' %}");
                     window.location.href = "{% url 'main' %}"
                 break;
+                case 'reporte_ventas_m':
+                    window.open("{% url 'report:reporte_ventas_m' %}");
+                    window.location.href = "{% url 'main' %}"
+                break;
             }
         }
 
@@ -97,6 +101,7 @@
             <option selected hidden>REPORTES</option>
             <option value="reporte_productos">REPORTE DE PRODUCTOS</option>=
             <option value="reporte_ventas_s">REPORTE DE VENTAS SEMANALES</option>
+            <option value="reporte_ventas_m">REPORTE DE VENTAS MENSUALES</option>
             <!-- <option><a href="">NUEVA VENTA</a></option> -->
         </select>
     </main>

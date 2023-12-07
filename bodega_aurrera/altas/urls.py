@@ -26,6 +26,6 @@ urlpatterns = [
     path('registrar_articulo/',views.registrar_articulo, name='registrar_articulo'),
     path('agregar_al_carrito/',views.agregar_carrito, name='agregar_al_carrito'),
     path('pagar/',views.pagar, name='pagar'),
-    path('ticket_pago/<str:folio>/<str:cajero>/<str:subtotal>/<str:iva>/<str:total>/',views.ticket_compra, name='report_ticket_compra'),
+    path('ticket_pago/<str:folio>/<str:cajero>/<str:subtotal>/<str:iva>/<str:total>/<str:descuento>/',views.ticket_compra, name='report_ticket_compra'),
     path('reporte_productos/',views.report_productos, name='report_productos')
 ]

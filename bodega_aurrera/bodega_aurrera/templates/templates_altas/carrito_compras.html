@@ -24,8 +24,8 @@
     .body-conteiner {
         width: 100%;
         height: 80%;
-
         display: flex;
+        flex-direction: column;
     }
 
     .footer-conteiner {
@@ -36,22 +36,22 @@
         align-items: center;
         justify-content: center;
     }
+    
+    .body-conteiner .add-product {
+        width: 100%;
+        height: 20%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
     .body-conteiner .shopping-cart {
-        width: 75%;
-        height: 100%;
+        width: 100%;
+        height: 80%;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-    }
-
-    .body-conteiner .add-product {
-        width: 25%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 
 
@@ -72,6 +72,9 @@
         padding: 0.5%;
     }
 
+
+
+/*
     #add-producto-conteiner {
         width: 70%;
         height: 90%;
@@ -113,9 +116,16 @@
         font-weight: bold;
     }
 
+    */
+
+    #add-producto-conteiner div{
+        width: 20%;
+        margin: 1%;
+    }
+
 
     .footer-conteiner div {
-        margin: 2%;
+        margin-bottom: 5%;
         width: 20%;
         height: 40%;
         display: flex;
@@ -167,6 +177,7 @@
         var subtotal = document.getElementById('subtotal');
         var total = document.getElementById('total');
         var input_iva = document.getElementById('iva');
+        var input_descuento = document.getElementById('descuento');
 
         // Obtén todas las filas del tbody
         var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
@@ -192,7 +203,7 @@
         //Calcular iva
         var total_iva = suma*0.16;
         iva.value = total_iva.toFixed(2);
-        var sum_total = suma + total_iva;
+        var sum_total = suma + total_iva - parseFloat(input_descuento.value);
         //total 
         total.value = sum_total.toFixed(2);
 
@@ -202,6 +213,7 @@
         var tabla = document.getElementById('cart-table');
         var id_producto = document.getElementById('id_producto');
         var cantidad = document.getElementById('cantidad');
+        var input_descuento = document.getElementById('descuento');
         //Enviar elementos al backend
         $.ajax({
             type: 'GET',
@@ -228,10 +240,12 @@
                     var total = (parseFloat(response.precio) * parseFloat(cantidad.value));
                     // Aplicar 10% de descuento
                     var descuento = total * 0.10;
+                    var v_descuento = parseFloat(input_descuento.value);
+                    input_descuento.value = (v_descuento + descuento).toFixed(2);
                     var total_descuento = total - descuento;
                     console.log(total_descuento);
-                    celda5.innerHTML = total_descuento;
-                    suma(total_descuento);
+                    celda5.innerHTML = total;
+                    suma(total);
                 }else{
                     var total = (parseFloat(response.precio) * parseFloat(cantidad.value));
                     celda5.innerHTML = total;
@@ -253,6 +267,7 @@
         var total = document.getElementById('total');
         var input_iva = document.getElementById('iva');
         var cajero = document.getElementById('cajero');
+        var input_descuento = document.getElementById('descuento');
         // Obtén todas las filas del tbody
         var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
 
@@ -289,11 +304,12 @@
                 'subtotal':subtotal.value,
                 'iva':input_iva.value,
                 'total':total.value,
-                'cajero':cajero.value, 
+                'cajero':cajero.value,
+                'descuento':input_descuento.value
             },
             dataType: 'json',
             success: function (response) {
-                window.open('/altas/ticket_pago/' + response.folio + '/' + response.cajero + '/' + response.subtotal + '/' + response.iva + '/' + response.total + '/');
+                window.open('/altas/ticket_pago/' + response.folio + '/' + response.cajero + '/' + response.subtotal + '/' + response.iva + '/' + response.total + '/'+response.descuento+'/');
                 window.location.href="{% url 'main' %}";
                 
 
@@ -310,7 +326,27 @@
 
 <main>
     <div id="main-conteiner">
+        <h2 style="text-align: center;">Agregar productos al carrito</h2>
         <div class="body-conteiner">
+            <div class="add-product">
+                <div id="add-producto-conteiner" style="width: 100%; display: flex; align-items: center; justify-content: center; background-color: #115a0b; height: 100%;">
+                    <div>
+                        <h3 style="text-align: center; color: #ffff;">Introduce ID del producto</h3>
+                        <input type="text" id="id_producto" style="width: 100%;">
+                    </div>
+                    <div>
+                        <h3 style="text-align: center; color: #ffff;">Introduce cantidad</h3>
+                        <input type="text" id="cantidad" style="width: 100%;">
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <button onclick="agregarProducto();" style="width: 30%; padding: 3%;">Agregar</button>
+                    </div>
+                    <div>
+                        <label for="cajero" style="width: 100%;">NOMBRE DEL CAJERO</label>
+                        <input id="cajero" type="text" required style="width: 100%;">
+                    </div>
+                </div>
+            </div>
             <div class="shopping-cart">
                 <table id="cart-table">
                     <thead>
@@ -328,17 +364,6 @@
                     </tbody>
                 </table>
             </div>
-            <div class="add-product">
-                <div id="add-producto-conteiner">
-                    <h2>Agregar productos al carrito</h2>
-                    <br>
-                    <h3>Introduce ID del producto</h3>
-                    <input type="text" id="id_producto">
-                    <h3>Introduce cantidad</h3>
-                    <input type="text" id="cantidad">
-                    <button onclick="agregarProducto();">Agregar</button>
-                </div>
-            </div>
         </div>
         <div class="footer-conteiner">
             <div>
@@ -350,23 +375,22 @@
                 <input id="iva" type="text" value="0.00" readonly>
             </div>
             <div>
+                <label for="descuento">DESCUENTO</label>
+                <input id="descuento" type="text" value="0.00" readonly>
+            </div>
+            <div>
                 <label for="total">TOTAL</label>
                 <input id="total" type="text" value="0.00" readonly>
             </div>
-            <div>
-                <label for="cajero">NOMBRE DEL CAJERO</label>
-                <input id="cajero" type="text" required>
-            </div>
-            <div>
-                <button><a href="{% url 'main' %}">CANCELAR</a></button>
-            </div>
-            <div>
-                <button onclick="pagar()">PAGAR</button>
-            </div>
         </div>
     </div>
-    <div id="bottom-conteiner">
-
+    <div id="bottom-conteiner" style="display: flex; align-items: center; justify-content: center; ">
+        <div style="width: 15%;">
+            <button style="padding: 1%;"><a href="{% url 'main' %}">CANCELAR</a></button>
+        </div>
+        <div style="width: 15%;">
+            <button onclick="pagar()" style="padding: 1%;">PAGAR</button>
+        </div>
     </div>
 </main>
 

@@ -57,6 +57,7 @@ def pagar(request):
         subtotal = request.GET.get('subtotal')
         iva = request.GET.get('iva')
         total = request.GET.get('total')
+        descuento = request.GET.get('descuento')
         cajero = request.GET.get('cajero')
     
     cajero = 'N_A' if cajero == '' else cajero
@@ -72,15 +73,15 @@ def pagar(request):
                 precio = float(producto.precio) * float(cantidad)
                 # print(precio)
                 pago = models.pago.objects.create(
-                    folio = nvo_folio, producto=producto, cantidad=cantidad, precio = precio
+                    folio = nvo_folio, producto=producto, cantidad=cantidad, precio = precio, descuento =descuento
                 )
                 producto.existencias = int(producto.existencias) - int(cantidad)
                 producto.save()
     
-    return JsonResponse({'folio':pago.folio, 'cajero':cajero, 'subtotal':subtotal, 'iva':iva, 'total':total})
+    return JsonResponse({'folio':pago.folio, 'cajero':cajero, 'subtotal':subtotal, 'iva':iva, 'total':total, 'descuento':descuento})
     
 
-def ticket_compra(request,folio,cajero,subtotal,iva,total):
+def ticket_compra(request,folio,cajero,subtotal,iva,total,descuento):
     query_pago = models.pago.objects.select_related('producto').all().filter(folio=folio)
     fecha_hora_actual = datetime.datetime.now()
     list_ticket = []
@@ -91,7 +92,7 @@ def ticket_compra(request,folio,cajero,subtotal,iva,total):
             'nombre_producto':rs.producto.nombre,
             'precio_producto':str(rs.producto.precio),
             'cantidad_producto':str(rs.cantidad),
-            'total_producto': str(rs.precio)
+            'total_producto': str(rs.precio),
         })
         
     data = {
@@ -100,7 +101,8 @@ def ticket_compra(request,folio,cajero,subtotal,iva,total):
         'cajero':cajero,
         'subtotal':f'{subtotal} M.N',
         'iva':f'{iva} M.N',
-        'total':f'{total} M.N'
+        'total':f'{total} M.N',
+        'descuento':f'{descuento} M.N'
     }
     
     for rs_2 in query_pago:

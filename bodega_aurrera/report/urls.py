@@ -10,4 +10,5 @@ urlpatterns = [
     path('save/<str:report_type>/', save , name='report_save'),
     
     path('ventas_semanales/', views.reporte_ventas_semanales, name='reporte_ventas_s'),
+    path('ventas_mensuales/', views.reporte_ventas_mensuales, name='reporte_ventas_m'),
 ]
