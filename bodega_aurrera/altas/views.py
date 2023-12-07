@@ -1,10 +1,13 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect, HttpResponse,JsonResponse
 from altas import models
-from altas.models import alta_de_productos,pago
+from altas.models import alta_de_productos
 from django.db.models import Sum, Max
 from report.report import report
 import datetime
+from django.core.files.storage import default_storage
+from django.conf import settings
+import os
 
 
 # Create your views here.
@@ -16,16 +19,27 @@ def view_alta_articulo(request):
 
 # DAR DE ALTA PRODUCTOS EN LA BASE DE DATOS
 def registrar_articulo(request):
-    models.alta_de_productos.objects.create(
-        nombre = request.POST['nom_producto'],
-        marca = request.POST['marca'],
-        modelo = request.POST['modelo'],
-        proveedor = request.POST['proveedor'],
-        existencias = request.POST['existencias'],
-        precio = request.POST['precio']
-    )
     
-    return redirect('main')
+    if request.method == 'POST':
+        # Crea el objeto de modelo con los datos del formulario y la ruta de la imagen
+        imagen_producto = request.FILES.get('img_prod', None)
+        
+        producto = alta_de_productos.objects.create(
+            nombre=request.POST['nom_producto'],
+            marca=request.POST['marca'],
+            modelo=request.POST['modelo'],
+            proveedor=request.POST['proveedor'],
+            existencias=request.POST['existencias'],
+            precio=request.POST['precio']
+        )
+        
+        if imagen_producto:
+            # Guardar la imagen en la ubicación especificada
+            producto.imagen_producto.save(imagen_producto.name, imagen_producto)
+
+        producto.save()
+    
+        return redirect('main')
     
 def agregar_carrito(request):
     if request.method == 'GET':

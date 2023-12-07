@@ -125,7 +125,7 @@
     </style>
 
     <main>
-        <form action="{% url 'altas:registrar_articulo' %}" method="post">
+        <form action="{% url 'altas:registrar_articulo' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             
             <div class="main-conteiner">
@@ -170,8 +170,8 @@
                 </div>
             </div>
 
-            <!-- <label for="img_prod">Cargar imagen del producto</label>
-            <input type="file" id="img_prod" name="img_prod"> -->
+            <label for="img_prod" style="font-weight: bold; margin: 1%;">Cargar imagen del producto</label>
+            <input type="file" id="img_prod" name="img_prod"> 
 
             <div class="main-conteiner">
                 <button><a href="{% url 'main' %}">CANCELAR</a></button>

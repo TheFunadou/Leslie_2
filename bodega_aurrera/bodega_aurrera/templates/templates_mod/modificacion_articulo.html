@@ -10,20 +10,81 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
         }
 
-        form{
-            width: 25%;
-            height: 80%;
+        section{
+            width: 80%;
+            height: 60%;
             border-radius: 2vh;
             background-color: #2c981d;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: solid #115a0b;;
+            border: solid #115a0b;
+            margin: 1%;
         }
 
+        section .main-conteiner{
+            width: 80%;
+            height: 20%;
+           
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        .main-conteiner .conteiner{
+            width: 80%;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+
+
+        .conteiner input{
+            width: 80%;
+            padding: 1%;
+            font-size: large;
+            border: none;
+            border-radius: 2vh;
+            text-align: center;
+
+        }
+
+        .conteiner h2{
+            color: #ffff;
+        }
+
+        .main-conteiner button{
+            width: 15%;
+            height: 10%;
+            padding: 2%;
+            margin: 0 2% 0 2%;
+            background-color: #ffff;
+            border: none;
+            border-radius: 2vh;
+            color: #000000dd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: large;
+        }
+
+        button a{
+            text-decoration: none;
+            color: #000000dd;
+            font-weight: bold;
+            font-size: large;
+        }
+
+        /*
         form>label{
             font-weight: bold;
             font-size: large;
@@ -62,44 +123,159 @@
             text-decoration: none;
             color: #ffff;
         }
+        */
     </style>
 
+    <script>
+
+        function buscar(){
+            let id_producto = document.getElementById('id_producto');
+            let nombre = document.getElementById('nombre');
+            let marca = document.getElementById('marca');
+            let modelo = document.getElementById('modelo');
+            let proveedor = document.getElementById('proveedor');
+            let existencias = document.getElementById('existencias');
+            let precio = document.getElementById('precio');
+            let msj = document.getElementById('msj');
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'bajas:buscar_articulo' %}", // Reemplaza esto con la URL de tu vista en Django
+                data: {
+                    'id_producto': id_producto.value,
+                },
+                dataType: 'json',
+                success: function (response) {
+                    
+                    if(response.mensaje == ''){
+                        response.info_producto.forEach(function(producto){
+                            nombre.value= producto.nombre;
+                            marca.value= producto.marca;
+                            modelo.value= producto.modelo;
+                            proveedor.value= producto.proveedor;
+                            existencias.value= producto.existencias;
+                            precio.value= producto.precio;
+                            msj.innerHTML= '';
+                        });
+                    }
+
+                    if (response.mensaje == 'producto no encontrado'){
+                        //mensaje por si no encuentra el producto
+                        nombre.innerHTML= '';
+                        marca.innerHTML= '';
+                        modelo.innerHTML=  '';
+                        proveedor.innerHTML=  '';
+                        existencias.innerHTML= '';
+                        precio.innerHTML=  '';
+                        msj.innerHTML= response.mensaje;
+                    }
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Error en la solicitud AJAX:");
+                    console.log("Estado: " + textStatus);
+                    console.log("Error: " + errorThrown);
+                }
+            });
+        }
+
+        function guardar(){
+            let id_producto = document.getElementById('id_producto');
+            let nombre = document.getElementById('nombre');
+            let marca = document.getElementById('marca');
+            let modelo = document.getElementById('modelo');
+            let proveedor = document.getElementById('proveedor');
+            let existencias = document.getElementById('existencias');
+            let precio = document.getElementById('precio');
+            let msj = document.getElementById('msj');
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'modificaciones:modificar_articulo' %}", // Reemplaza esto con la URL de tu vista en Django
+                data: {
+                    'id_producto': id_producto.value,
+                    'nombre': nombre.value,
+                    'marca': marca.value,
+                    'modelo': modelo.value,
+                    'proveedor': proveedor.value,
+                    'existencias': existencias.value,
+                    'precio': precio.value,
+                },
+                dataType: 'json',
+                success: function (response) {
+                    
+                    nombre.innerHTML= '';
+                    marca.innerHTML= '';
+                    modelo.innerHTML=  '';
+                    proveedor.innerHTML=  '';
+                    existencias.innerHTML= '';
+                    precio.innerHTML=  '';
+                    msj.innerHTML= response.mensaje;
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Error en la solicitud AJAX:");
+                    console.log("Estado: " + textStatus);
+                    console.log("Error: " + errorThrown);
+                }
+            });
+        }
+    </script>
+
     <main>
+        <h3 style="text-align: center; padding:1%;">INSERTE ID DE PRODUCTO</h3>
+        <div style="background-color: #115a0b; height: 10%; display: flex; align-items: center; justify-content: center; border: solid #28c419; width: 100%;">
+            <label for="id_producto" style="font-weight: bold; background-color: #1b8611; padding: 0.5%; border-radius: 3vh 0 0 3vh; color: #ffff; border: solid #1b8611;">ID PRODUCTO</label>
+            <input type="text" id="id_producto" style="width: 10%; border: none; border-radius: 0 3vh 3vh 0; text-align: center; padding: 0.5%; margin-right: 2%; font-size: large;">
+            <button style="font-weight: bold; background-color: #053a00; padding: 0.5%; border-radius: 3vh; margin-right: 2%; border: none; color: #ffff; width: 5%;" onclick="buscar()">BUSCAR</button>
+        </div>
+        <section>
+            <div class="main-conteiner">
 
-        <label for="nom_producto">ID del producto</label>
-        <input type="text" id="id_producto">
-        <button onclick="buscarProducto()">Buscar producto</button>
+                <div class="conteiner">
+                    <h3>Nombre Producto</h3>
+                    <input type="text" id="nombre" name="nom_producto">
+                </div>
+                
+                <div class="conteiner">
+                    <h3>Marca</h3>
+                    <input type="text" id="marca" name="marca">
+                </div>
+                
+                <div class="conteiner">
+                    <h3>Modelo</h3>
+                    <input type="text" id="modelo" name="modelo">
+                </div>
+                
+            </div>
 
-        <form action="{% url 'altas:registrar_articulo' %}" method="post">
-            {% csrf_token %}
+            <div class="main-conteiner">
+                <div class="conteiner">
+                    <h3>Proveedor</h3>
+                    <input type="text" id="proveedor" name="proveedor">
+                </div>
 
-            <label for="nom_producto">Nombre del producto</label>
-            <input type="text" id="nom_producto" name="nom_producto">
+                <div class="conteiner">
+                    <h3>Existencias</h3>
+                    <input type="text" id="existencias" name="existencias">
+                </div>
+                
+                <div class="conteiner">
+                    <h3>Precio</h3>
+                    <input type="text" id="precio" name="precio">
+                </div>
+            </div>
 
-            <label for="marca">Marca</label>
-            <input type="text" id="marca" name="marca">
-
-            <label for="modelo">Modelo</label>
-            <input type="text" id="modelo" name="modelo">
-
-
-            <label for="proveedor">Proveedor</label>
-            <input type="text" id="proveedor" name="proveedor">
-
-            <label for="existencias">Existencias</label>
-            <input type="text" id="existencias" name="existencias">
-
-            <label for="precio">Precio</label>
-            <input type="text" id="precio" name="precio">
+            <h3 id="msj" style="text-align: center; margin: 2%;"></h3>
 
             <!-- <label for="img_prod">Cargar imagen del producto</label>
             <input type="file" id="img_prod" name="img_prod"> -->
 
-            <div>
+            <div class="main-conteiner">
                 <button><a href="{% url 'main' %}">CANCELAR</a></button>
-                <button type="submit">GUARDAR</button>
+                <button type="submit" onclick="guardar()">GUARDAR</button>
             </div>
-        </form>
+        </section>
     </main>
     
 {% endblock %}

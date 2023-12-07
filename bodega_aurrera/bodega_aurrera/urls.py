@@ -22,6 +22,9 @@ from report.views import Index
 from report.report import *
 #RUTAS GLOBALES
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,4 +41,9 @@ urlpatterns = [
     path('edit/<str:report_type>/', edit , name='report_edit'),
     path('run/', run , name='report_run'),
     path('save/<str:report_type>/', save , name='report_save'),
+    
 ]
+
+#iMG
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

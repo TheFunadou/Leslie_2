@@ -19,7 +19,9 @@ from django.urls import path
 from bajas import views 
 
 app_name='modificaciones'
+from modificaciones import views
 
 urlpatterns = [
-    
+    path('view_modificacion_articulo/', views.view_modificaciones , name='modificaicon_articulo'),
+    path('modificar_articulo/', views.modificar_articulo , name='modificar_articulo'),
 ]

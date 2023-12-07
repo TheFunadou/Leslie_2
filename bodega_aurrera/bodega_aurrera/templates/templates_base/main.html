@@ -50,8 +50,31 @@
                     window.open("{% url 'altas:report_productos' %}");
                     window.location.href = "{% url 'main' %}"
                 break;
+                case 'reporte_ventas_s':
+                    window.open("{% url 'report:reporte_ventas_s' %}");
+                    window.location.href = "{% url 'main' %}"
+                break;
             }
         }
+
+        function redirect_bajas(){
+            var select_bajas = document.getElementById('select_bajas');
+            switch(select_bajas.value){
+                case 'productos':
+                    window.location.href = "{% url 'bajas:baja_producto' %}"
+                break;
+            }
+        }
+
+        function redirect_modificaciones(){
+            var select_modificaciones = document.getElementById('select_modificaciones');
+            switch(select_modificaciones.value){
+                case 'productos':
+                    window.location.href = "{% url 'modificaciones:modificaicon_articulo' %}"
+                break;
+            }
+        }
+
 
     </script>
 
@@ -61,23 +84,21 @@
             <option value="venta">VENTA</option>
             <option value="producto">NUEVO PRODUCTO</option>
         </select>
-<!-- 
-        <select name="select_bajas" id="select_bajas">
+
+        <select name="select_bajas" id="select_bajas" onchange="redirect_bajas()">
             <option selected hidden>BAJAS</option>
-            <option><a href="">PRODUCTOS</a></option>
-
+            <option value="productos">PRODUCTOS</option>
         </select>
-        <select name="modificaciones" id="select_modificaciones">
+        <select name="modificaciones" id="select_modificaciones" onchange="redirect_modificaciones()">
             <option selected hidden>MODIFICACIONES</option>
-            <option><a href="">EDITAR INFORMACION PRODUCTO</a></option>
-
-        </select> -->
+            <option value="productos">EDITAR INFORMACION PRODUCTO</option>
+        </select>
         <select name="reportes" id="select_reportes" onchange="redirect_reportes()">
             <option selected hidden>REPORTES</option>
-            <option value="reporte_productos">REPORTE DE PRODUCTOS</option>
+            <option value="reporte_productos">REPORTE DE PRODUCTOS</option>=
+            <option value="reporte_ventas_s">REPORTE DE VENTAS SEMANALES</option>
             <!-- <option><a href="">NUEVA VENTA</a></option> -->
         </select>
     </main>
-
 
 {% endblock %}

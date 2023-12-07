@@ -11,7 +11,7 @@ class alta_de_productos(models.Model):
     proveedor = models.CharField(max_length=50)
     existencias = models.IntegerField()
     precio = models.DecimalField(max_digits=10,decimal_places=2)
-    # imagen_producto = models.ImageField(upload_to=)
+    imagen_producto = models.ImageField(upload_to='productos', null=True)
     
 
 class pago(models.Model):
@@ -20,6 +20,7 @@ class pago(models.Model):
     producto = models.ForeignKey(alta_de_productos,on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     precio = models.FloatField()
+    fecha_hora = models.DateTimeField(auto_now_add=True)
     
     class Meta:
         unique_together = ('serial','folio', 'producto')

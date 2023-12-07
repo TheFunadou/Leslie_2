@@ -22,4 +22,6 @@ app_name='bajas'
 
 urlpatterns = [
     path('bajas_productos/', views.view_baja_producto , name='baja_producto'),
+    path('buscar_articulo/', views.buscar_articulo , name='buscar_articulo'),
+    path('borrar_articulo/', views.borrar_articulo , name='borrar_articulo'),
 ]
